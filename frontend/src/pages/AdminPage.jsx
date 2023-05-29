@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-const REACT_APP_ADMIN_AUTH = "https://weather-telegram-bot-backend.onrender.com/"
+const REACT_APP_URL = "http://localhost:5000/"
 
 const AdminPage = () => {
 
@@ -28,11 +28,12 @@ const Dashboard = () => {
 
     const [users, setUsers] = useState([]);
     const [stats, setStats] = useState([]);
-    // const [subscribers, setSubscribers] = useState([]);
+    const [subscribers, setSubscribers] = useState([]);
     const [usage, setUsage] = useState([]);
+    const [blockedUsers, setBlockedUsers] = useState([]);
 
     useEffect(() => {
-        axios.get(REACT_APP_ADMIN_AUTH + "users")
+        axios.get(REACT_APP_URL + "users")
             .then(response => response.data)
             .then(data => {
                 console.log("Users Data : ", data);
@@ -44,7 +45,7 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        axios.get(REACT_APP_ADMIN_AUTH + "stats")
+        axios.get(REACT_APP_URL + "stats")
             .then(response => response.data)
             .then(data => {
                 console.log("Stats Data : ", data);
@@ -56,7 +57,7 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        axios.get(REACT_APP_ADMIN_AUTH + "usage")
+        axios.get(REACT_APP_URL + "usage")
             .then(response => response.data)
             .then(data => {
                 console.log("Usage Data : ", data);
@@ -67,92 +68,447 @@ const Dashboard = () => {
             })
     }, []);
 
+    useEffect(() => {
+        axios.get(REACT_APP_URL + "subscribers")
+            .then(response => response.data)
+            .then(data => {
+                console.log("Subscribers Data : ", data);
+                setSubscribers(data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, []);
+
+    useEffect(() => {
+        axios.get(REACT_APP_URL + "admin/blocked")
+            .then(response => response.data)
+            .then(data => {
+                console.log("Blocked Users Data : ", data);
+                setBlockedUsers(data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, []);
+
+
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("authentication");
+        window.location.reload();
+    };
+
 
     return (
         <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "30px", marginTop: "20px" }}>
-                <button onClick={() => navigate('/')} style={{ backgroundColor: "transparent", border: "4px solid transparent", color: "blue", cursor: "pointer", padding: "5px" }}>
-                    <h2 style={{ margin: "0" }}>&lt; Home</h2></button>
-                <h1 style={{ textAlign: "center" }}>Admin Dashboard</h1>
-                <button onClick={() => {
-                    sessionStorage.removeItem('authentication');
-                    window.location.reload();
-                }} style={{ backgroundColor: "transparent", border: "4px solid transparent", cursor: "pointer", padding: "5px" }}>
-                    <h2 style={{ margin: "0", color: "red" }}>Logout</h2></button>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: "40px" }}>
-                <div>
-                    <h2 style={{ textAlign: "center", color: "blue" }}>Latest 15 Users</h2>
-                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ border: "3px solid blueviolet", overflow: "auto", display: "flex", justifyContent: "space-between", color: "brown", alignItems: "center", width: "50vw", padding: "5px", paddingTop: "10px", paddingBottom: "10px", textAlign: "center" }}>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Username</h3>
-                            {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>User ID</h3>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Used Time</h3>
-                        </div>
-                        {users.map((user, index) => {
-                            return (
-                                <div key={index} style={{ border: "3px solid black", overflow: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "50vw", padding: "5px", textAlign: "center" }}>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{user.username || "NA"}</p>
-                                    {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{user.userid}</p>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{user.time}</p>
-                                </div>
-                            )
-                        })}
-                    </div>
+            <div>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        margin: "30px",
+                        marginTop: "20px"
+                    }}
+                >
+                    <button
+                        onClick={() => navigate("/")}
+                        style={{
+                            backgroundColor: "transparent",
+                            border: "4px solid transparent",
+                            color: "blue",
+                            cursor: "pointer",
+                            padding: "5px"
+                        }}
+                    >
+                        <h2 style={{ marginRight: "10px" }}>&lt; Home</h2>
+                    </button>
+                    <h1 style={{ textAlign: "center" }}>Admin Dashboard</h1>
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            backgroundColor: "transparent",
+                            border: "4px solid transparent",
+                            cursor: "pointer",
+                            padding: "5px"
+                        }}
+                    >
+                        <h2 style={{ marginRight: "10px", color: "red" }}>Logout</h2>
+                    </button>
                 </div>
-            </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: "50px" }}>
-                <div>
-                    <h2 style={{ textAlign: "center", color: "blue" }}>Subscribers' Usage Statistics</h2>
-                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ border: "3px solid blueviolet", overflow: "auto", display: "flex", justifyContent: "space-between", color: "brown", alignItems: "center", width: "50vw", padding: "5px", paddingTop: "10px", paddingBottom: "10px", textAlign: "center" }}>
-                            {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>User ID</h3>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Username</h3>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Total Usage</h3>
-                        </div>
-                        {console.log("Stats:", stats)}
-                        {stats.map((each, index) => {
-                            return (
-                                <div key={index} style={{ border: "3px solid black", overflow: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "50vw", padding: "5px", textAlign: "center" }}>
-                                    {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.username || "NA"}</p>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.userid}</p>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.count}</p>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginBottom: "40px"
+                    }}
+                >
+                    <div>
+                        <h2 style={{ textAlign: "center", color: "blue" }}>
+                            Latest 15 Users
+                        </h2>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    border: "3px solid blueviolet",
+                                    overflow: "auto",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "brown",
+                                    alignItems: "center",
+                                    width: "70vw",
+                                    padding: "5px",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>User ID</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Username</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Used Time</h3>
+                            </div>
+                            {users.map((user, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        border: "3px solid black",
+                                        overflow: "auto",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        width: "70vw",
+                                        padding: "5px",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{user.userid}</p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>
+                                        {user.username || "NA"}
+                                    </p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{user.time}</p>
                                 </div>
-                            )
-                        })}
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: "50px" }}>
-                <div>
-                    <h2 style={{ textAlign: "center", color: "blue" }}>Latest 25 Usage Data</h2>
-                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ border: "3px solid blueviolet", overflow: "auto", display: "flex", justifyContent: "space-between", color: "brown", alignItems: "center", width: "50vw", padding: "5px", paddingTop: "10px", paddingBottom: "10px", textAlign: "center" }}>
-                            {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>User ID</h3>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Username</h3>
-                            <h3 style={{ margin: "0", minWidth: "33%" }}>Usage Time</h3>
-                        </div>
-                        {console.log("Stats:", stats)}
-                        {usage.map((each, index) => {
-                            return (
-                                <div key={index} style={{ border: "3px solid black", overflow: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "50vw", padding: "5px", textAlign: "center" }}>
-                                    {/* <p style={{ margin: "0" }}>{user.chatId}</p> */}
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.username || "NA"}</p>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.userid}</p>
-                                    <p style={{ margin: "0", minWidth: "33%" }}>{each.time}</p>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginBottom: "50px"
+                    }}
+                >
+                    <div>
+                        <h2 style={{ textAlign: "center", color: "blue" }}>
+                            Subscribers' Usage Statistics
+                        </h2>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    border: "3px solid blueviolet",
+                                    overflow: "auto",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "brown",
+                                    alignItems: "center",
+                                    width: "70vw",
+                                    padding: "5px",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>User ID</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Username</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Total Usage</h3>
+                            </div>
+                            {stats.map((each, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        border: "3px solid black",
+                                        overflow: "auto",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        width: "70vw",
+                                        padding: "5px",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{each.userid}</p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>
+                                        {each.username || "NA"}
+                                    </p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{each.count}</p>
                                 </div>
-                            )
-                        })}
+                            ))}
+                        </div>
                     </div>
                 </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginBottom: "50px"
+                    }}
+                >
+                    <div>
+                        <h2 style={{ textAlign: "center", color: "blue" }}>
+                            All Subscribers
+                        </h2>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    border: "3px solid blueviolet",
+                                    overflow: "auto",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "brown",
+                                    alignItems: "center",
+                                    width: "70vw",
+                                    padding: "5px",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <h3 style={{ marginRight: "10px", minWidth: "24%" }}>User ID</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "24%" }}>Username</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "24%" }}>Action 1</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "24%" }}>Action 2</h3>
+                            </div>
+                            {subscribers.map((each, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        border: "3px solid black",
+                                        overflow: "auto",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        width: "70vw",
+                                        padding: "5px",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    <p style={{ marginRight: "10px", minWidth: "24%" }}>
+                                        {each.userid}
+                                    </p>
+                                    <p style={{ marginRight: "10px", minWidth: "24%" }}>{each.username || "NA"}</p>
+                                    <p onClick={
+                                        () => {
+                                            axios.post(REACT_APP_URL + "admin/blocked", { userid: each.userid, username: each.username })
+                                                .then(response => response.data)
+                                                .then(data => {
+                                                    console.log("Data : ", data);
+                                                    alert("User Blocked Successfully");
+                                                    window.location.reload();
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                })
+                                        }
+                                    } style={{ marginRight: "10px", minWidth: "24%", cursor: "pointer", color: "red" }}>Block</p>
+                                    <p onClick={
+                                        () => {
+                                            console.log("User ID : ", each.userid);
+                                            axios.delete(REACT_APP_URL + "subscribers", { data: { userid: each.userid } })
+                                                .then(response => response.data)
+                                                .then(data => {
+                                                    console.log("Data : ", data);
+                                                    alert("User Deleted Successfully");
+                                                    window.location.reload();
+                                                })
+                                                .catch(err => {
+                                                    console.log("Error: ", err);
+                                                })
+                                        }
+                                    } style={{ marginRight: "10px", minWidth: "24%", cursor: "pointer", color: "red" }}>Delete</p>
+
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginBottom: "50px"
+                    }}
+                >
+                    <div>
+                        <h2 style={{ textAlign: "center", color: "blue" }}>
+                            Blocked Subscribers
+                        </h2>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    border: "3px solid blueviolet",
+                                    overflow: "auto",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "brown",
+                                    alignItems: "center",
+                                    width: "70vw",
+                                    padding: "5px",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <h3 style={{ marginRight: "10px", minWidth: "31%" }}>User ID</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "31%" }}>Username</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "31%" }}>Action</h3>
+                            </div>
+                            {blockedUsers.map((each, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        border: "3px solid black",
+                                        overflow: "auto",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        width: "70vw",
+                                        padding: "5px",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    <p style={{ marginRight: "10px", minWidth: "31%" }}>
+                                        {each.userid}
+                                    </p>
+                                    <p style={{ marginRight: "10px", minWidth: "31%" }}>{each.username || "NA"}</p>
+                                    <p onClick={
+                                        () => {
+                                            axios.delete(REACT_APP_URL + "admin/blocked", { data: { userid: each.userid } })
+                                                .then(response => response.data)
+                                                .then(data => {
+                                                    console.log("Data : ", data);
+                                                    alert("User UnBlocked Successfully");
+                                                    window.location.reload();
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                })
+                                        }
+                                    } style={{ marginRight: "10px", minWidth: "31%", cursor: "pointer", color: "red" }}>UnBlock</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginBottom: "50px"
+                    }}
+                >
+                    <div>
+                        <h2 style={{ textAlign: "center", color: "blue" }}>
+                            Latest 25 Usage Data
+                        </h2>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    border: "3px solid blueviolet",
+                                    overflow: "auto",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "brown",
+                                    alignItems: "center",
+                                    width: "70vw",
+                                    padding: "5px",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>User ID</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Username</h3>
+                                <h3 style={{ marginRight: "10px", minWidth: "32%" }}>Usage Time</h3>
+                            </div>
+                            {usage.map((each, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        border: "3px solid black",
+                                        overflow: "auto",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        width: "70vw",
+                                        padding: "5px",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>
+                                        {each.userid}
+                                    </p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{each.username || "NA"}</p>
+                                    <p style={{ marginRight: "10px", minWidth: "32%" }}>{each.time}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div >
     )
@@ -168,8 +524,8 @@ const LoginForm = (props) => {
         e.preventDefault();
         console.log("Username : ", username);
         console.log("Password : ", password);
-        // console.log("Admin Auth : ", REACT_APP_ADMIN_AUTH);
-        axios.post(REACT_APP_ADMIN_AUTH + 'admin/auth', {
+        // console.log("Admin Auth : ", REACT_APP_URL);
+        axios.post(REACT_APP_URL + 'admin/auth', {
             username: username,
             password: password
         })
@@ -201,7 +557,7 @@ const LoginForm = (props) => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "30px", marginTop: "20px" }}>
                 <h2 style={{ textAlign: "center" }}>Admin Login</h2>
                 <button onClick={() => navigate('/')} style={{ backgroundColor: "transparent", border: "4px solid transparent", color: "blue", cursor: "pointer", padding: "5px" }}>
-                    <h2 style={{ margin: "0", fontWeight: "700" }}>Home</h2></button>
+                    <h2 style={{ margin: "10px", fontWeight: "700" }}>Home</h2></button>
             </div>
             <div style={{ display: "flex", alignItems: "center", alignContent: "center", justifyContent: "center" }} className="login container">
                 <form onSubmit={checkLogin}>

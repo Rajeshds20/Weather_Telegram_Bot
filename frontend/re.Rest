@@ -1,0 +1,14 @@
+GET http://localhost:5000/admin/all
+
+
+
+######
+
+POST http://localhost:5000/admin/auth
+
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test123"
+}
