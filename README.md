@@ -5,10 +5,12 @@ The application is a Telegram bot that provides weather updates for cities. User
 # Weather Update Telegram Bot
 
 ![Telegram Bot](https://img.shields.io/badge/Telegram-Bot-blue)
-![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
-![Express.js](https://img.shields.io/badge/Express.js-Framework-orange)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-red)
+![Node](https://img.shields.io/badge/Node.js-JS-green)
+![Express](https://img.shields.io/badge/Express.js-JS-orange)
+![MongoDB](https://img.shields.io/badge/MongoDB-DB-red)
 ![Rest API](https://img.shields.io/badge/REST-API-blueviolet)
+![React](https://img.shields.io/badge/React-JS-pink)
+
 
 This is a Telegram bot that provides weather updates for cities. Users can subscribe to receive weather updates and get current weather data for specific cities.
 
@@ -25,17 +27,53 @@ This is a Telegram bot that provides weather updates for cities. Users can subsc
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/Rajeshds20/weather-telegram-bot.git
+   git clone https://github.com/Rajeshds20/Weather_Telegram_Bot-Complete.git
    ```
 
-2. Install the dependencies:
+2. Navigate to the Directory
 
    ```shell
-   cd weather-telegram-bot
-   npm install
+   cd Weather_Telegram_Bot-Complete
    ```
 
-3. Configure environment variables:
+3. Open separate terminals for front and backend parts
+
+   ### Front End Admin Panel Part
+
+      ```shell
+      cd frontend
+      ```
+    - Install the dependencies:
+
+      ```shell
+      npm install
+      ```
+
+    - Start the Development server
+  
+      ```shell
+      npm start
+      ```
+
+   ### Backend Telegram Bot Part
+
+      ```shell
+      cd backend
+      ```
+      
+    - Install the dependencies:
+
+      ```shell
+      npm install
+      ```
+
+   - Start the Development server
+  
+      ```shell
+      npm start
+      ```
+
+5. Configure environment variables:
 
    - Create a `.env` file in the project root directory.
    - Add the following environment variables:
@@ -47,21 +85,24 @@ This is a Telegram bot that provides weather updates for cities. Users can subsc
      PORT=your-port-number
      ```
 
-4. Start the application:
+6. Start the application:
 
    ```shell
    npm start
    ```
 
-5. Open Telegram and search for your bot by its username.
-6. Start a conversation with the bot and use the available commands.
+7. Open Telegram and search for your bot by its username.
+8. Start a conversation with the bot and use the available commands.
 
 ## Usage
 
-- `/subscribe` - Subscribe to weather updates.
-- `/unsubscribe` - Unsubscribe from weather updates.
-- `/weather` - Get the current weather data for a specific city.
-- `/help` - Display the list of available commands.
+- Manage and view the users and statistics in Admin Panel of the Bot
+
+- In Telegram Bot
+   - `/subscribe` - Subscribe to weather updates.
+   - `/unsubscribe` - Unsubscribe from weather updates.
+   - `/weather` - Get the current weather data for a specific city.
+   - `/help` - Display the list of available commands.
 
 ## Technologies Used
 
@@ -70,6 +111,7 @@ This is a Telegram bot that provides weather updates for cities. Users can subsc
 - MongoDB
 - Telegraf (Telegram Bot Framework)
 - Axios (HTTP requests)
+- React
 
 ## Creators
 
