@@ -4,7 +4,7 @@ The application is a Telegram bot that provides weather updates for cities. User
 
 # Weather Update Telegram Bot
 
-![Telegram Bot](https://img.shields.io/badge/Telegram-Bot-blue)
+![Telegram Bot](https://badgen.net/static/Telegram/Bot/blue?icon=telegram)
 ![Node](https://img.shields.io/badge/Node.js-JS-green)
 ![Express](https://img.shields.io/badge/Express.js-JS-orange)
 ![MongoDB](https://img.shields.io/badge/MongoDB-DB-red)
